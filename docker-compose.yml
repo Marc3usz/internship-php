@@ -21,3 +21,10 @@ services:
       - db_data:/var/lib/mysql
 volumes:
   db_data:
+RUN apt-get update && apt-get install -y \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    libmysqlclient-dev \
+    && docker-php-ext-configure pdo_mysql --with-pdo-mysql \
+    && docker-php-ext-install pdo_mysql
