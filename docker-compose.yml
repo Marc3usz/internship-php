@@ -10,6 +10,7 @@ services:
       - db
   db:
     image: mysql:5.7
+    command: --init-file /init-mysql/init.sql
     container_name: db
     environment:
       MYSQL_ROOT_PASSWORD: root_password
