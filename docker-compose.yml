@@ -8,23 +8,27 @@ services:
       - ./src:/var/www/html
     depends_on:
       - db
+    build:
+      context: .
+      dockerfile: dockerfile
+    networks:
+      - my_network
   db:
     image: mysql:5.7
     command: --init-file /init-mysql/init.sql
     container_name: db
     environment:
       MYSQL_ROOT_PASSWORD: root_password
-      MYSQL_DATABASE: test_db
+      MYSQL_DATABASE: my_database
       MYSQL_USER: user
       MYSQL_PASSWORD: user_password
     volumes:
       - db_data:/var/lib/mysql
+      - ./init-mysql:/init-mysql
+    networks:
+      - my_network
 volumes:
   db_data:
-RUN apt-get update && apt-get install -y \
-    libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    libmysqlclient-dev \
-    && docker-php-ext-configure pdo_mysql --with-pdo-mysql \
-    && docker-php-ext-install pdo_mysql
+networks:
+  my_network:
+    driver: bridge
