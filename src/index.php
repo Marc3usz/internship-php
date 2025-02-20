@@ -73,8 +73,13 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
             height: 300,
             menubar: false,
             plugins: 'advlist autolink lists link charmap preview anchor searchreplace visualblocks code fullscreen insertdatetime media table help wordcount',
-            toolbar: 'undo redo | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist | outdent indent | removeformat | help'
-        });
+            toolbar: 'undo redo | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist | outdent indent | removeformat | help',
+            setup: function (editor) {
+                editor.on('change', function () {
+                    tinymce.triggerSave();
+                });
+            }
+            });
     </script>
 </head>
 <body>
@@ -82,7 +87,7 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <?php if (isset($error)): ?>
         <p style="color: red;"><?= htmlspecialchars($error) ?></p>
     <?php endif; ?>
-    <form method="POST">
+    <form method="POST" onsubmit="tinymce.triggerSave();">
         <label>Title:</label>
         <input type="text" name="title" required><br>
         <label>Content:</label>
