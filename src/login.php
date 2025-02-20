@@ -22,6 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login'])) {
     if ($userData && password_verify($pass, $userData['password'])) {
         $_SESSION['user'] = $userData['username'];
         $_SESSION['admin'] = $userData['is_admin'] ? true : false;
+        $_SESSION['user_id'] = $userData['id'];
         
         if ($userData['is_admin']) {
             header("Location: admin.php");
@@ -41,6 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login'])) {
     <title>Login</title>
 </head>
 <body>
+    <h1>Log In</h1>
     <form method="POST">
         <label>Username:</label>
         <input type="text" name="username" required>
@@ -50,5 +52,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login'])) {
         <br>
         <button type="submit" name="login">Login</button>
     </form>
+    <a href="signin.php">No account? Create one here</a>
 </body>
 </html>
