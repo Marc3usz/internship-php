@@ -34,9 +34,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['title'], $_POST['conte
     }
 }
 
-$stmt = $pdo->query("SELECT * FROM users");
-$users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// Handle post deletion (Admin only)
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_post']) && isset($_POST['post_id']) && $_SESSION['admin']) {
+    $post_id = $_POST['post_id'];
 
+    $stmt = $pdo->prepare("DELETE FROM posts WHERE id = ?");
+    $stmt->execute([$post_id]);
+
+    header("Location: index.php");
+    exit;
+}
+
+// Fetch posts
 $stmt = $pdo->query("
     SELECT posts.id, posts.title, posts.content, posts.created_at, users.name 
     FROM posts 
@@ -72,6 +81,15 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <h2><?= htmlspecialchars($post['title']) ?></h2>
             <p><?= nl2br(htmlspecialchars($post['content'])) ?></p>
             <p><small>Posted by <?= htmlspecialchars($post['name']) ?> on <?= $post['created_at'] ?></small></p>
+
+            <?php if ($_SESSION['admin']): ?>
+                <!-- Delete button for admins -->
+                <form method="POST" style="display:inline;">
+                    <input type="hidden" name="post_id" value="<?= $post['id'] ?>">
+                    <button type="submit" name="delete_post" onclick="return confirm('Are you sure you want to delete this post?');">Delete</button>
+                </form>
+            <?php endif; ?>
+
             <hr>
         </div>
     <?php endforeach; ?>
