@@ -21,6 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login'])) {
     
     if ($userData && password_verify($pass, $userData['password'])) {
         $_SESSION['user'] = $userData['username'];
+        $_SESSION['email'] = $userData['email'];
         $_SESSION['admin'] = $userData['is_admin'] ? true : false;
         $_SESSION['user_id'] = $userData['id'];
         

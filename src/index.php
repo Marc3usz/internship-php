@@ -1,14 +1,17 @@
 <?php
+require __DIR__ . '/vendor/autoload.php';
+use Dotenv\Dotenv;
+
 session_start();
 $host = "db";
 $dbname = "my_database";
 $username = "user";
 $password = "user_password";
 
-$env = parse_ini_file('.env');
-$newenv = $env['TINYMCE_API_KEY'] ?? "no-api-key";
-putenv("TINYMCE_API_KEY=$newenv");
-$tinymce_api_key = getenv('TINYMCE_API_KEY');
+$dotenv = Dotenv::createImmutable(__DIR__);
+$dotenv->load();
+
+$tinymce_api_key = $_ENV['TINYMCE_API_KEY'];
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
@@ -23,13 +26,13 @@ $languages = [
         'submit_post' => 'Submit a Post', 'logout' => 'Log Out', 'title' => 'Title', 'content' => 'Content',
         'post' => 'Post', 'all_posts' => 'All Posts', 'delete' => 'Delete', 'posted_by' => 'Posted by',
         'confirm_delete' => 'Are you sure you want to delete this post?', 'switch_lang' => 'Switch to Polish',
-        'tinymce_lang' => 'en'
+        'tinymce_lang' => 'en', 'contact' => 'contact'
     ],
     'pl' => [
         'submit_post' => 'Dodaj post', 'logout' => 'Wyloguj się', 'title' => 'Tytuł', 'content' => 'Treść',
         'post' => 'Opublikuj', 'all_posts' => 'Wszystkie posty', 'delete' => 'Usuń', 'posted_by' => 'Dodano przez',
         'confirm_delete' => 'Czy na pewno chcesz usunąć ten post?', 'switch_lang' => 'Przełącz na angielski',
-        'tinymce_lang' => 'pl'
+        'tinymce_lang' => 'pl', 'contact' => 'kontact'
     ]
 ];
 
@@ -105,6 +108,7 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <h1><?= $languages[$language]['submit_post'] ?></h1>
         <a href="logout.php"><?= $languages[$language]['logout'] ?></a>
         <a href="?lang=<?= $language === 'en' ? 'pl' : 'en' ?>"><?= $languages[$language]['switch_lang'] ?></a>
+        <a href="contact.php"><?= $languages[$language]['contact'] ?></a>
     </div>
 
     <?php if (isset($error)): ?>

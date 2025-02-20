@@ -114,5 +114,6 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </table>
     <br>
     <a href="logout.php">Logout</a>
+    <a href="index.php">Posts</a>
 </body>
 </html>
