@@ -5,6 +5,11 @@ $dbname = "my_database";
 $username = "user";
 $password = "user_password";
 
+$env = parse_ini_file('.env');
+$newenv = $env['TINYMCE_API_KEY'] ?? "no-api-key";
+putenv("TINYMCE_API_KEY=$newenv");
+$tinymce_api_key = getenv('TINYMCE_API_KEY');
+
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
 } catch (PDOException $e) {
@@ -56,9 +61,21 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Posts</title>
+    <script src="https://cdn.tiny.cloud/1/<?= $tinymce_api_key ?>/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <script>
+        tinymce.init({
+            selector: 'textarea#content',
+            height: 300,
+            menubar: false,
+            plugins: 'advlist autolink lists link charmap preview anchor searchreplace visualblocks code fullscreen insertdatetime media table help wordcount',
+            toolbar: 'undo redo | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist | outdent indent | removeformat | help'
+        });
+    </script>
 </head>
 <body>
     <h1>Submit a Post</h1>
@@ -69,7 +86,7 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <label>Title:</label>
         <input type="text" name="title" required><br>
         <label>Content:</label>
-        <textarea name="content" required></textarea><br>
+        <textarea id="content" name="content" required></textarea><br>
         <button type="submit">Post</button>
     </form>
 
@@ -79,7 +96,7 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <?php foreach ($posts as $post): ?>
         <div>
             <h2><?= htmlspecialchars($post['title']) ?></h2>
-            <p><?= nl2br(htmlspecialchars($post['content'])) ?></p>
+            <p><?= $post['content'] ?></p> <!-- No htmlspecialchars() to allow formatted content -->
             <p><small>Posted by <?= htmlspecialchars($post['name']) ?> on <?= $post['created_at'] ?></small></p>
 
             <?php if ($_SESSION['admin']): ?>
