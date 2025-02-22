@@ -13,6 +13,8 @@ services:
       dockerfile: dockerfile
     networks:
       - my_network
+    dns:
+      - 8.8.8.8
   db:
     image: mysql:5.7
     command: --init-file /init-mysql/init.sql

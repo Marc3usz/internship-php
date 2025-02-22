@@ -22,5 +22,6 @@ CREATE TABLE IF NOT EXISTS posts (
 
 
 -- default admin user with pre-hashed password using bcrypt, password is `admin123`. Default admin account needed to grant others admin rights
+-- change the admin email if testing with SMTP service that only allows sending emails to owner in demo mode (example: Mailtrap)
 INSERT INTO users (username, password, name, email, is_admin)
 VALUES ('admin', '$2y$10$Cn1C9WKGBAg3P0Pc3269Hu9UQ.MYUi54KNGzfGVDexRiVuTnTWnru', 'Administrator', 'admin@admin.com', 1);
